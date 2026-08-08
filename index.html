@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexander Anhorn</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
+</head>
+<body>
+
+  <!-- Instagram -->
+  <a id="insta-label" href="https://instagram.com/shred.34" target="_blank" rel="noopener">@SHRED.34</a>
+  <div id="location-label">LAUSANNE, CH</div>
+  <div id="copyright">© 2026</div>
+  <div id="lang-toggle">
+    <span id="lang-en">EN</span>
+    <span class="lang-sep"> · </span>
+    <span id="lang-fr">FR</span>
+  </div>
+
+  <!-- Masques (invisibles mais gardent la mise en page) -->
+  <div class="mask" id="mask-top"></div>
+  <div class="mask" id="mask-bottom"></div>
+
+  <!-- Lignes fixes -->
+  <div id="line-work" class="ui-line"></div>
+  <div id="line-contact" class="ui-line"></div>
+
+<!-- Fixé haut gauche -->
+  <div id="ui-top">
+    <a href="biography.html">Alexander Anhorn</a>
+    <button id="work-btn" aria-expanded="false">
+      <span data-i18n="work">Work</span> <span id="sign">+</span>
+    </button>
+  </div>
+
+  <!-- Fixé bas droite -->
+  <a id="contact" href="contact.html">Contact</a>
+
+  <!-- Landing carousel -->
+  <div id="landing-carousel"></div>
+  <button id="landing-prev">←</button>
+  <button id="landing-next">→</button>
+  <div id="landing-name"></div>
+
+  <!-- Liste de projets (scrollable) -->
+  <div id="list"></div>
+
+  <script src="./js/lang.js"></script>
+  <script src="./js/main.js"></script>
+</body>
+</html>

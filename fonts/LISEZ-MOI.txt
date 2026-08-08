@@ -1,0 +1,30 @@
+DOSSIER FONTS — ES Rebond Grotesk
+==================================
+
+Place tes fichiers de police ici avec exactement ces noms :
+
+  ESRebondGrotesk-Regular.woff2
+  ESRebondGrotesk-Regular.woff
+  ESRebondGrotesk-Regular.otf
+
+  ESRebondGrotesk-Bold.woff2
+  ESRebondGrotesk-Bold.woff
+  ESRebondGrotesk-Bold.otf
+
+Tu n'as pas besoin des 6 fichiers — un seul format suffit par graisse.
+woff2 est préféré (plus léger, tous navigateurs modernes).
+
+Si tes fichiers ont des noms différents (ex. "ESRebondGrotesk_W_Rg.woff2"),
+tu as deux options :
+
+  1. Renomme tes fichiers pour qu'ils correspondent aux noms ci-dessus.
+
+  2. Ou édite les chemins src dans css/style.css (les @font-face en haut du fichier).
+
+Comment exporter depuis le Livre des polices (macOS) :
+  — Sélectionne la police → Fichier → Exporter la police
+  — Choisis le format .otf
+  — Répète pour Regular et Bold
+
+Note : le site fonctionne sans la font (fallback système),
+mais ES Rebond Grotesk ne s'affichera qu'une fois les fichiers ici.

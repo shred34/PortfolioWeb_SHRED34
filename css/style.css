@@ -1,0 +1,639 @@
+/* ============================================================
+   FONTS — ES Rebond Grotesk
+   ============================================================ */
+
+@font-face {
+  font-family: 'ESRebondGrotesk';
+  src: url('../fonts/ESRebondGrotesqueTRIAL-Light-BF66189040e6001.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'ESRebondGrotesk';
+  src: url('../fonts/ESRebondGrotesqueTRIAL-Regular-BF66189040b697b.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'ESRebondGrotesk';
+  src: url('../fonts/ESRebondGrotesqueTRIAL-Bold-BF66189040400df.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --m:  24px;    /* marge latérale */
+  --fs: 64px;    /* taille de base */
+  --lh: 1.2;    /* interligne */
+}
+
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+body {
+  font-family: 'ESRebondGrotesk', -apple-system, BlinkMacSystemFont,
+               'Helvetica Neue', Arial, sans-serif;
+  font-size: var(--fs);
+  line-height: var(--lh);
+  font-weight: 300;
+  color: #000;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a, button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ============================================================
+   INDEX — ÉLÉMENTS FIXES HAUT GAUCHE
+   ============================================================ */
+
+#ui-top {
+  position: fixed;
+  top: 10vh;
+  left: var(--m);
+  z-index: 30;
+  font-size: 32px;
+  font-weight: 700;  /* Bold : Alexander Anhorn + work */
+}
+
+#ui-top a,
+#ui-top button {
+  display: block;
+}
+
+#ui-top a {
+  font-weight: 300;
+}
+
+/* Bouton work + sign */
+#work-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-weight: 700;
+}
+
+#sign {
+  display: inline-block;
+  transition: opacity 0.1s ease;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   INDEX — CONTACT FIXÉ BAS DROITE
+   ============================================================ */
+
+#contact {
+  position: fixed;
+  bottom: 11vh;
+  right: var(--m);
+  z-index: 30;
+  font-size: 32px;
+  font-weight: 300;
+}
+
+
+
+/* ============================================================
+   INDEX — MASQUES (invisibles, servent uniquement au positionnement)
+   ============================================================ */
+
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.ui-line {
+  position: fixed;
+  left: var(--m);
+  right: var(--m);
+  height: 1px;
+  background: #000;
+  z-index: 25;
+  pointer-events: none;
+}
+
+#mask-top {
+  top: 0;
+  background: linear-gradient(to bottom, #fff 88%, rgba(255,255,255,0) 100%);
+}
+
+#mask-bottom {
+  bottom: 0;
+  background: linear-gradient(to top, #fff 88%, rgba(255,255,255,0) 100%);
+}
+
+
+/* ============================================================
+   INDEX — LISTE DE PROJETS
+   (scrollable, non fixée, Regular)
+   ============================================================ */
+
+/* ============================================================
+   LANDING CAROUSEL
+   ============================================================ */
+
+#landing-carousel {
+  position: fixed;
+  top: calc(50% + 4vh);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 50vh;
+  z-index: 5;
+  cursor: pointer;
+}
+
+.landing-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.landing-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.landing-slide video {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+  transition: max-width 0.4s ease, max-height 0.4s ease;
+}
+
+#landing-prev,
+#landing-next {
+  position: fixed;
+  transform: translateY(-50%);
+  font-size: 20px;
+  font-weight: 300;
+  color: #000;
+  opacity: 0.3;
+  z-index: 6;
+  cursor: pointer;
+  line-height: 1;
+  transition: opacity 0.15s ease;
+}
+#landing-prev { left: var(--m); }
+#landing-next { right: var(--m); }
+#landing-prev:hover,
+#landing-next:hover { opacity: 0.9; }
+
+#landing-name {
+  position: fixed;
+  right: var(--m);
+  font-size: 14px;
+  font-weight: 300;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+#list {
+  display: none;
+  font-size: 32px;
+  font-weight: 300;
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes proj-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes proj-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-10px); }
+}
+
+.proj {
+  display: block;
+  position: relative;
+  padding: 0.08em var(--m) 0.08em calc(var(--m) + 1em);
+  font-weight: 300;
+  opacity: 0;
+  background: #fff;
+}
+
+.proj::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(var(--m) + 1em);
+  right: var(--m);
+  height: 1px;
+  background: #000;
+}
+
+.proj:first-child::before {
+  display: none;
+}
+
+/* Sub-items inside categories */
+.proj-sub {
+  padding-left: calc(var(--m) + 2em);
+}
+.proj-sub::before {
+  left: calc(var(--m) + 2em);
+}
+.proj-sub:first-child::before {
+  display: none;
+}
+
+/* Category rows */
+.cat-row {
+  display: block;
+}
+.cat-btn {
+  display: block;
+  position: relative;
+  width: 100%;
+  text-align: left;
+  padding: 0.08em var(--m) 0.08em calc(var(--m) + 1em);
+  font-weight: 300;
+  cursor: pointer;
+  opacity: 0;
+  background: #fff;
+}
+.cat-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(var(--m) + 1em);
+  right: var(--m);
+  height: 1px;
+  background: #000;
+}
+.cat-sign {
+  font-weight: 300;
+}
+.cat-sub {
+  overflow: hidden;
+  height: 0;
+}
+.cat-btn.anim-in {
+  animation: proj-in 0.15s ease both;
+}
+.cat-btn.anim-out {
+  animation: proj-out 0.15s ease both;
+}
+
+/* ============================================================
+   PAGES CATÉGORIE (video.html, interaction.html, identity.html)
+   ============================================================ */
+.cat-page .proj-page {
+  scroll-margin-top: calc(3vh + 3rem);
+}
+.cat-page .proj-page + .proj-page {
+  padding-top: 4rem;
+  position: relative;
+}
+.cat-page .proj-page + .proj-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--m);
+  right: var(--m);
+  height: 1px;
+  background: #000;
+}
+@media (min-width: 768px) {
+  .cat-page .proj-page + .proj-page::before {
+    left: 18vw;
+    right: 18vw;
+  }
+}
+
+
+.proj.anim-in {
+  animation: proj-in 0.15s ease both;
+}
+
+.proj.anim-out {
+  animation: proj-out 0.15s ease both;
+}
+
+
+/* ============================================================
+   COMPTEUR & DATE
+   ============================================================ */
+
+#insta-label {
+  position: fixed;
+  top: 3vh;
+  left: var(--m);
+  font-size: 14px;
+  font-weight: 300;
+  z-index: 30;
+  text-decoration: none;
+  color: #000;
+}
+
+#location-label {
+  position: fixed;
+  top: 3vh;
+  right: var(--m);
+  font-size: 14px;
+  font-weight: 300;
+  z-index: 30;
+}
+
+#copyright {
+  position: fixed;
+  bottom: 3vh;
+  left: var(--m);
+  font-size: 14px;
+  font-weight: 300;
+  z-index: 30;
+  pointer-events: none;
+}
+
+#lang-toggle {
+  position: fixed;
+  bottom: 3vh;
+  right: var(--m);
+  font-size: 14px;
+  font-weight: 300;
+  z-index: 30;
+  letter-spacing: 0.03em;
+}
+
+#lang-toggle span {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+#lang-toggle .lang-sep {
+  cursor: default;
+  opacity: 0.3;
+}
+
+/* ============================================================
+   PAGE CONTACT
+   ============================================================ */
+
+.contact-body {
+  font-size: 32px;
+  font-weight: 300;
+  line-height: var(--lh);
+  padding: calc(10vh + 3rem) var(--m) 6vh calc(var(--m) + 1em);
+}
+
+.contact-status {
+  margin-bottom: 1.5em;
+}
+
+.contact-link {
+  display: block;
+  color: #000;
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+
+/* ============================================================
+   PAGES INTÉRIEURES
+   ============================================================ */
+
+.back-link {
+  position: fixed;
+  top: 3vh;
+  left: var(--m);
+  font-size: 32px;
+  font-weight: 300;
+  color: #000;
+  text-decoration: none;
+  z-index: 10;
+  line-height: 1;
+}
+
+/* ============================================================
+   PAGES PROJET
+   ============================================================ */
+
+.proj-page {
+  padding: calc(6vh + 3rem) var(--m) 6vh;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .proj-page {
+    padding-left:  18vw;
+    padding-right: 18vw;
+  }
+}
+
+
+.proj-title {
+  font-family: 'ESRebondGrotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: var(--fs);
+  font-weight: 300;
+  line-height: var(--lh);
+  margin-bottom: 0.4em;
+}
+
+.proj-desc {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.65;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+/* Vidéo YouTube 16:9 */
+.video-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  margin-bottom: 2.5rem;
+  background: #f0f0f0;
+}
+
+.video-wrap iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+
+/* Carousel */
+.carousel {
+  width: 100%;
+  margin-bottom: 2.5rem;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.carousel--compact {
+  margin-top: -2rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-window {
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #fff;
+}
+
+.carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.35s ease;
+}
+
+.carousel-track img,
+.carousel-track video {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.carousel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 300;
+  padding: 0;
+  color: #000;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.carousel-counter {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+/* Bouton visiter le site */
+.visit-btn {
+  display: inline-block;
+  margin-bottom: 1.2rem;
+  font-size: 16px;
+  font-weight: 300;
+  color: #000;
+  text-decoration: underline;
+}
+
+.visit-btn::after {
+  content: ' →';
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ============================================================
+   HOVER LABELS (desktop uniquement)
+   ============================================================ */
+@media (min-width: 769px) {
+  .proj[data-label]::after,
+  .cat-btn[data-label]::after {
+    content: attr(data-label);
+    position: absolute;
+    right: var(--m);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .proj[data-label]:hover::after,
+  .cat-btn[data-label]:hover::after {
+    opacity: 1;
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  :root {
+    --m:  24px;
+    --fs: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --m:  18px;
+    --fs: 28px;
+  }
+}
+
+@media (max-width: 390px) {
+  :root {
+    --m:  14px;
+    --fs: 24px;
+  }
+}
