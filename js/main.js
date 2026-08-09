@@ -89,6 +89,7 @@ LANDING.forEach(function (item, i) {
   vid.muted = true;
   vid.playsInline = true;
   vid.setAttribute('playsinline', '');
+  vid.preload = 'auto';
   if (item.nudge) { vid.style.transform = 'translateY(' + item.nudge + ')'; }
   slide.appendChild(vid);
   landingCarousel.appendChild(slide);
@@ -97,7 +98,7 @@ LANDING.forEach(function (item, i) {
 });
 
 applyLandingSizes();
-landingVideos[0].play();
+landingVideos.forEach(function(v) { v.play(); });
 if (isTouchDevice) showLandingName(true);
 
 function showLandingName(temporary) {
@@ -121,11 +122,8 @@ function hideLandingName() {
 function goLanding(n) {
   var prev = landingCur;
   landingCur = ((n % LANDING.length) + LANDING.length) % LANDING.length;
-  landingVideos[prev].pause();
-  landingVideos[prev].currentTime = 0;
   landingSlides[prev].classList.remove('active');
   landingSlides[landingCur].classList.add('active');
-  landingVideos[landingCur].play();
   showLandingName(isTouchDevice);
 }
 
