@@ -205,6 +205,7 @@ a, button {
   width: auto;
   height: auto;
   display: block;
+  background: #fff;
   transition: max-width 0.4s ease, max-height 0.4s ease;
 }
 
