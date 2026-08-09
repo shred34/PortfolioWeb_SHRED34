@@ -179,7 +179,6 @@ a, button {
   height: 50vh;
   z-index: 5;
   cursor: pointer;
-  background: #fff;
 }
 
 .landing-slide {
@@ -191,7 +190,6 @@ a, button {
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
-  background: #fff;
 }
 
 .landing-slide.active {
@@ -205,7 +203,6 @@ a, button {
   width: auto;
   height: auto;
   display: block;
-  background: #fff;
   transition: max-width 0.4s ease, max-height 0.4s ease;
 }
 
