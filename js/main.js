@@ -51,7 +51,7 @@ var listIsOpen  = false;
 
 /* ── Landing Carousel ── */
 var LANDING = [
-  { name: 'Shredsauce Exploration', src: './covers/shredsauce.webm', href: 'projects/shredsauce-exploration.html', size: '104%', mobileSize: '130%' },
+  { name: 'Shredsauce Exploration', src: './covers/shredsauce.webm', href: 'projects/shredsauce-exploration.html', size: '104%', mobileSize: '82%' },
   { name: 'Camille',                src: './covers/camille.webm',    href: 'projects/camille.html',                size: '94%',  mobileSize: '105%',  nudge: '-2vh' },
   { name: 'Tristan-Linder.ch',      src: './covers/tristan.webm',   href: 'projects/tristan-linder-ch.html',      size: '77%',  mobileSize: '85%',   nudge: '-2vh' },
   { name: 'Pluck',                  src: './carouselPluck/3.webm',   href: 'projects/pluck.html',                  size: '80%',  mobileSize: '95%',   nudge: '-2vh' },
