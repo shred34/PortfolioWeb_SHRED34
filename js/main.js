@@ -62,12 +62,13 @@ var landingCarousel = document.getElementById('landing-carousel');
 var landingPrev     = document.getElementById('landing-prev');
 var landingNext     = document.getElementById('landing-next');
 var landingNameEl   = document.getElementById('landing-name');
+var contactEl       = document.getElementById('contact');
 var landingCur      = 0;
 var landingSlides   = [];
 var landingVideos   = [];
 var landingVisible  = true;
 var nameTimer       = null;
-var isTouchDevice = ('ontouchstart' in window);
+var isTouchDevice   = ('ontouchstart' in window);
 
 function applyLandingSizes() {
   var mobile = window.innerWidth <= 768;
@@ -98,7 +99,19 @@ LANDING.forEach(function (item, i) {
 });
 
 applyLandingSizes();
-landingVideos.forEach(function(v) { v.play(); });
+
+function playAllVideos() {
+  landingVideos.forEach(function(v) {
+    if (v.paused) v.play().catch(function(){});
+  });
+}
+
+playAllVideos();
+
+/* Reprendre la lecture si l'onglet revient au premier plan */
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) playAllVideos();
+});
 if (isTouchDevice) showLandingName(true);
 
 function showLandingName(temporary) {
@@ -357,27 +370,25 @@ function visibleItems() {
 
 /* ── Calcul masques + padding liste ── */
 function sync() {
-  var topEdge = uiTop.getBoundingClientRect().bottom;
-  var fs      = parseFloat(getComputedStyle(uiTop).fontSize);
-  var lh      = fs * 1.2;
-  var tH      = Math.ceil(topEdge + fs * 0.7);
-  var listTop = Math.ceil(topEdge);
-  var bH      = Math.ceil(window.innerHeight * 0.12 + lh * 1.2);
-
-  maskT.style.height = tH + 'px';
-  maskB.style.height = bH + 'px';
-
-  var contactEl   = document.getElementById('contact');
+  var topEdge     = uiTop.getBoundingClientRect().bottom;
+  var fs          = parseFloat(getComputedStyle(uiTop).fontSize);
+  var lh          = fs * 1.2;
+  var tH          = Math.ceil(topEdge + fs * 0.7);
+  var bH          = Math.ceil(window.innerHeight * 0.12 + lh * 1.2);
   var contactRect = contactEl.getBoundingClientRect();
+
+  maskT.style.height    = tH + 'px';
+  maskB.style.height    = bH + 'px';
   lineWork.style.top    = Math.round(topEdge) + 'px';
   lineContact.style.top = Math.round(contactRect.top) + 'px';
-  if (landingNameEl) landingNameEl.style.top = (Math.round(topEdge) + 10) + 'px';
+  landingNameEl.style.top = (Math.round(topEdge) + 10) + 'px';
+
   var midY = Math.round((topEdge + contactRect.top) / 2);
   landingPrev.style.top = midY + 'px';
   landingNext.style.top = midY + 'px';
 
   if (list.style.display !== 'none') {
-    list.style.paddingTop    = listTop + 'px';
+    list.style.paddingTop    = Math.ceil(topEdge) + 'px';
     list.style.paddingBottom = Math.ceil(bH * 0.875 - fs * 0.08 + 3) + 'px';
   }
 }
@@ -386,25 +397,6 @@ sync();
 window.addEventListener('resize', function() { sync(); applyLandingSizes(); });
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(sync);
-}
-
-/* ── Ouvre automatiquement Work si on revient d'une page projet ── */
-if (window.location.search.indexOf('open=work') !== -1) {
-  listIsOpen = true;
-  workBtn.setAttribute('aria-expanded', 'true');
-  sign.textContent = '−';
-  list.style.display = 'block';
-  setLandingVisible(false, 0);
-  sync();
-  history.replaceState(null, '', window.location.pathname);
-  requestAnimationFrame(function () {
-    requestAnimationFrame(function () {
-      list.querySelectorAll('.proj:not(.proj-sub), .cat-btn').forEach(function (item, i) {
-        item.style.animationDelay = (i * 0.015) + 's';
-        item.classList.add('anim-in');
-      });
-    });
-  });
 }
 
 /* ── Toggle work +/− ── */
