@@ -107,8 +107,7 @@ function playAllVideos() {
 }
 
 function fixVideo(v) {
-  var t = v.currentTime;
-  v.currentTime = t > 0.1 ? t - 0.05 : 0;
+  v.currentTime = 0;
   v.play().catch(function(){});
 }
 
@@ -119,9 +118,8 @@ landingVideos.forEach(function(v) {
       if (v.paused && !document.hidden) v.play().catch(function(){});
     }, 200);
   });
-  /* Stall/waiting (données manquantes ou décodeur bloqué) → débloquer */
+  /* Stall (browser a arrêté de recevoir des données) → débloquer */
   v.addEventListener('stalled', function() { fixVideo(v); });
-  v.addEventListener('waiting', function() { fixVideo(v); });
   v.addEventListener('error',   function() {
     v.load();
     v.play().catch(function(){});
