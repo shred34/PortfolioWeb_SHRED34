@@ -106,12 +106,58 @@ function playAllVideos() {
   });
 }
 
+function fixVideo(v) {
+  var t = v.currentTime;
+  v.currentTime = t > 0.1 ? t - 0.05 : 0;
+  v.play().catch(function(){});
+}
+
+/* Pause détectée → relancer */
+landingVideos.forEach(function(v) {
+  v.addEventListener('pause', function() {
+    setTimeout(function() {
+      if (v.paused && !document.hidden) v.play().catch(function(){});
+    }, 200);
+  });
+  /* Stall/waiting (données manquantes ou décodeur bloqué) → débloquer */
+  v.addEventListener('stalled', function() { fixVideo(v); });
+  v.addEventListener('waiting', function() { fixVideo(v); });
+  v.addEventListener('error',   function() {
+    v.load();
+    v.play().catch(function(){});
+  });
+});
+
 playAllVideos();
 
-/* Reprendre la lecture si l'onglet revient au premier plan */
+/* Reprendre si l'onglet revient au premier plan ou focus */
 document.addEventListener('visibilitychange', function() {
   if (!document.hidden) playAllVideos();
 });
+window.addEventListener('focus', playAllVideos);
+
+/* Détection de freeze réel : currentTime qui n'avance plus alors que paused=false */
+(function watchFreeze() {
+  var lastTimes = landingVideos.map(function() { return -1; });
+  var stalledFor = landingVideos.map(function() { return 0; });
+
+  setInterval(function() {
+    if (document.hidden) return;
+    landingVideos.forEach(function(v, i) {
+      if (v.paused || v.ended || v.readyState < 2) { stalledFor[i] = 0; return; }
+      if (v.currentTime === lastTimes[i]) {
+        stalledFor[i]++;
+        if (stalledFor[i] >= 2) { /* 2 checks × 1.5s = 3s de freeze → on débloq */
+          stalledFor[i] = 0;
+          fixVideo(v);
+        }
+      } else {
+        stalledFor[i] = 0;
+      }
+      lastTimes[i] = v.currentTime;
+    });
+  }, 1500);
+})();
 if (isTouchDevice) showLandingName(true);
 
 function showLandingName(temporary) {
