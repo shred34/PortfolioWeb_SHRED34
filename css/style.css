@@ -121,7 +121,7 @@ a, button {
 
 #contact {
   position: fixed;
-  bottom: 11vh;
+  bottom: 11svh;
   right: var(--m);
   z-index: 30;
   font-size: 32px;
