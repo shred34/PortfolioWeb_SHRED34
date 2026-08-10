@@ -50,12 +50,14 @@ var list        = document.getElementById('list');
 var listIsOpen  = false;
 
 /* ── Landing Carousel ── */
+/* Couvertures en H.264/MP4 : décodage matériel sur tous les navigateurs,
+   Safari macOS compris (qui n'a pas de décodeur VP9 matériel). */
 var LANDING = [
-  { name: 'Shredsauce Exploration', src: './covers/shredsauce.webm', href: 'projects/shredsauce-exploration.html', size: '104%', mobileSize: '82%' },
-  { name: 'Camille',                src: './covers/camille.webm',    href: 'projects/camille.html',                size: '94%',  mobileSize: '105%',  nudge: '-2vh' },
-  { name: 'Tristan-Linder.ch',      src: './covers/tristan.webm',   href: 'projects/tristan-linder-ch.html',      size: '77%',  mobileSize: '85%',   nudge: '-2vh' },
-  { name: 'Pluck',                  src: './carouselPluck/3.webm',   href: 'projects/pluck.html',                  size: '80%',  mobileSize: '95%',   nudge: '-2vh' },
-  { name: 'Wild Destroyer',         src: './covers/wild.webm',       href: 'projects/wild-destroyer.html',         size: '78%',  mobileSize: '55%',   nudge: '-2vh' }
+  { name: 'Shredsauce Exploration', src: './covers/shredsauce.mp4', href: 'projects/shredsauce-exploration.html', size: '104%', mobileSize: '82%' },
+  { name: 'Camille',                src: './covers/camille.mp4',    href: 'projects/camille.html',                size: '94%',  mobileSize: '105%',  nudge: '-2vh' },
+  { name: 'Tristan-Linder.ch',      src: './covers/tristan.mp4',    href: 'projects/tristan-linder-ch.html',      size: '77%',  mobileSize: '85%',   nudge: '-2vh' },
+  { name: 'Pluck',                  src: './covers/pluck.mp4',      href: 'projects/pluck.html',                  size: '80%',  mobileSize: '95%',   nudge: '-2vh' },
+  { name: 'Wild Destroyer',         src: './covers/wild.mp4',       href: 'projects/wild-destroyer.html',         size: '78%',  mobileSize: '55%',   nudge: '-2vh' }
 ];
 
 var landingCarousel = document.getElementById('landing-carousel');
@@ -85,10 +87,7 @@ LANDING.forEach(function (item, i) {
   var slide = document.createElement('div');
   slide.className = 'landing-slide' + (i === 0 ? ' active' : '');
   var vid = document.createElement('video');
-  var src = document.createElement('source');
-  src.src  = item.src;
-  src.type = 'video/webm; codecs=vp9';
-  vid.appendChild(src);
+  vid.src = item.src;
   vid.loop = true;
   vid.muted = true;
   vid.playsInline = true;
@@ -103,62 +102,40 @@ LANDING.forEach(function (item, i) {
 
 applyLandingSizes();
 
+/* ── Maintien de la lecture ──────────────────────────────────────────
+   Volontairement non destructif : on ne fait JAMAIS de seek
+   (v.currentTime = ...) ni de v.load(). Ces deux opérations vident et
+   reconstruisent tout le pipeline de décodage — sur Safari elles coûtent
+   plus cher que de laisser la vidéo continuer, et transforment un simple
+   hoquet en blocage définitif. Un play() sur une vidéo en pause suffit. */
 function playAllVideos() {
-  landingVideos.forEach(function(v) {
-    if (v.paused) v.play().catch(function(){});
+  landingVideos.forEach(function (v) {
+    if (v.paused) v.play().catch(function () {});
   });
 }
 
-function fixVideo(v) {
-  v.currentTime = 0;
-  v.play().catch(function(){});
-}
-
-/* Pause détectée → relancer */
-landingVideos.forEach(function(v) {
-  v.addEventListener('pause', function() {
-    setTimeout(function() {
-      if (v.paused && !document.hidden) v.play().catch(function(){});
+/* Le navigateur met une vidéo en pause (économie d'énergie) → on relance */
+landingVideos.forEach(function (v) {
+  v.addEventListener('pause', function () {
+    setTimeout(function () {
+      if (v.paused && !document.hidden) v.play().catch(function () {});
     }, 200);
-  });
-  /* Stall (browser a arrêté de recevoir des données) → débloquer */
-  v.addEventListener('stalled', function() { fixVideo(v); });
-  v.addEventListener('error',   function() {
-    v.load();
-    v.play().catch(function(){});
   });
 });
 
 playAllVideos();
 
-/* Reprendre si l'onglet revient au premier plan ou focus */
-document.addEventListener('visibilitychange', function() {
+/* Retour de l'onglet / de la fenêtre au premier plan */
+document.addEventListener('visibilitychange', function () {
   if (!document.hidden) playAllVideos();
 });
 window.addEventListener('focus', playAllVideos);
 
-/* Détection de freeze réel : currentTime qui n'avance plus alors que paused=false */
-(function watchFreeze() {
-  var lastTimes = landingVideos.map(function() { return -1; });
-  var stalledFor = landingVideos.map(function() { return 0; });
+/* Filet de sécurité */
+setInterval(function () {
+  if (!document.hidden) playAllVideos();
+}, 3000);
 
-  setInterval(function() {
-    if (document.hidden) return;
-    landingVideos.forEach(function(v, i) {
-      if (v.paused || v.ended || v.readyState < 2) { stalledFor[i] = 0; return; }
-      if (v.currentTime === lastTimes[i]) {
-        stalledFor[i]++;
-        if (stalledFor[i] >= 2) { /* 2 checks × 1.5s = 3s de freeze → on débloq */
-          stalledFor[i] = 0;
-          fixVideo(v);
-        }
-      } else {
-        stalledFor[i] = 0;
-      }
-      lastTimes[i] = v.currentTime;
-    });
-  }, 1500);
-})();
 if (isTouchDevice) showLandingName(true);
 
 function showLandingName(temporary) {
@@ -424,10 +401,10 @@ function sync() {
   var bH          = Math.ceil(window.innerHeight * 0.12 + lh * 1.2);
   var contactRect = contactEl.getBoundingClientRect();
 
+  /* Les deux lignes ne sont PAS positionnées ici : elles sont enfants de
+     #ui-top et #contact-wrap et suivent leurs parents en CSS pur. */
   maskT.style.height    = tH + 'px';
   maskB.style.height    = bH + 'px';
-  lineWork.style.top    = Math.round(topEdge) + 'px';
-  lineContact.style.top = Math.round(contactRect.top) + 'px';
   landingNameEl.style.top = (Math.round(topEdge) + 10) + 'px';
 
   var midY = Math.round((topEdge + contactRect.top) / 2);
@@ -442,13 +419,6 @@ function sync() {
 
 sync();
 window.addEventListener('resize', function() { sync(); applyLandingSizes(); });
-if (window.visualViewport) {
-  var vpTimer = null;
-  window.visualViewport.addEventListener('resize', function() {
-    clearTimeout(vpTimer);
-    vpTimer = setTimeout(sync, 200);
-  });
-}
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(sync);
 }

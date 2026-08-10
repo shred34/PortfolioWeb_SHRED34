@@ -86,14 +86,19 @@ a, button {
   position: fixed;
   top: 10vh;
   left: var(--m);
+  right: var(--m);   /* pleine largeur : la ligne enfant s'étend d'un bord à l'autre */
   z-index: 30;
   font-size: 32px;
   font-weight: 700;  /* Bold : Alexander Anhorn + work */
+  pointer-events: none;  /* le bloc pleine largeur ne doit rien intercepter */
 }
 
 #ui-top a,
 #ui-top button {
   display: block;
+  width: -webkit-fit-content;
+  width: fit-content;    /* les liens restent à la largeur du texte */
+  pointer-events: auto;  /* mais restent cliquables */
 }
 
 #ui-top a {
@@ -119,13 +124,20 @@ a, button {
    INDEX — CONTACT FIXÉ BAS DROITE
    ============================================================ */
 
-#contact {
+#contact-wrap {
   position: fixed;
   bottom: 11vh;
+  left: var(--m);
   right: var(--m);
   z-index: 30;
+  text-align: right;
+  pointer-events: none;
+}
+
+#contact {
   font-size: 32px;
   font-weight: 300;
+  pointer-events: auto;
 }
 
 
@@ -142,14 +154,19 @@ a, button {
   pointer-events: none;
 }
 
+/* Les lignes sont des enfants de #ui-top et #contact-wrap.
+   Elles occupent toute la largeur de leur parent et suivent donc leurs
+   éléments dans la même frame, par construction. Aucun JavaScript n'intervient
+   dans leur position : il leur est impossible de se désynchroniser. */
 .ui-line {
-  position: fixed;
-  left: var(--m);
-  right: var(--m);
   height: 1px;
   background: #000;
-  z-index: 25;
   pointer-events: none;
+}
+
+/* Chevauche d'1px le haut du texte, comme le faisait l'ancien calcul JS */
+#line-contact {
+  margin-bottom: -1px;
 }
 
 #mask-top {

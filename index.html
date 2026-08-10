@@ -24,20 +24,24 @@
   <div class="mask" id="mask-top"></div>
   <div class="mask" id="mask-bottom"></div>
 
-  <!-- Lignes fixes -->
-  <div id="line-work" class="ui-line"></div>
-  <div id="line-contact" class="ui-line"></div>
-
-<!-- Fixé haut gauche -->
+  <!-- Fixé haut gauche.
+       La ligne est un ENFANT de #ui-top : elle est donc toujours exactement
+       sous "Work +", sans aucun calcul JavaScript. -->
   <div id="ui-top">
     <a href="biography.html">Alexander Anhorn</a>
     <button id="work-btn" aria-expanded="false">
       <span data-i18n="work">Work</span> <span id="sign">+</span>
     </button>
+    <div id="line-work" class="ui-line"></div>
   </div>
 
-  <!-- Fixé bas droite -->
-  <a id="contact" href="contact.html">Contact</a>
+  <!-- Fixé bas droite.
+       Même principe : la ligne est dans le même bloc que le lien, donc
+       toujours exactement au-dessus de "Contact". -->
+  <div id="contact-wrap">
+    <div id="line-contact" class="ui-line"></div>
+    <a id="contact" href="contact.html">Contact</a>
+  </div>
 
   <!-- Landing carousel -->
   <div id="landing-carousel"></div>
