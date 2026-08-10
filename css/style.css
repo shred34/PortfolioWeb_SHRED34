@@ -47,7 +47,7 @@
      dernière ligne de la liste tombe sur le même rythme que les lignes.
      Le cache et le padding de la liste suivent automatiquement (ils sont
      déduits de la position réelle de la ligne). */
-  --contact-lift: 5px;
+  --contact-lift: 20px;
 }
 
 
@@ -660,7 +660,7 @@ a, button {
   :root {
     --m:  24px;
     --fs: 40px;
-    --contact-lift: 15px;   /* hérité par les paliers 480px et 390px */
+    --contact-lift: 30px;   /* hérité par les paliers 480px et 390px */
   }
 }
 
