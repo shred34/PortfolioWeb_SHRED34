@@ -55,6 +55,16 @@
    BASE
    ============================================================ */
 
+/* Supprime le rebond élastique en bout de scroll.
+   Sur iOS, pendant ce rebond, position:fixed n'est pas réellement fixe : la
+   couche des éléments fixes se décolle du contenu, le cache part et la liste
+   reste, d'où les superpositions visibles en fin de course. Sans rebond,
+   le problème ne peut plus se produire. Bonus : désactive aussi le
+   tirer-pour-rafraîchir sur Android. */
+html, body {
+  overscroll-behavior-y: none;
+}
+
 body {
   font-family: 'ESRebondGrotesk', -apple-system, BlinkMacSystemFont,
                'Helvetica Neue', Arial, sans-serif;
@@ -650,7 +660,7 @@ a, button {
   :root {
     --m:  24px;
     --fs: 40px;
-    --contact-lift: 10px;   /* hérité par les paliers 480px et 390px */
+    --contact-lift: 15px;   /* hérité par les paliers 480px et 390px */
   }
 }
 
