@@ -85,7 +85,10 @@ LANDING.forEach(function (item, i) {
   var slide = document.createElement('div');
   slide.className = 'landing-slide' + (i === 0 ? ' active' : '');
   var vid = document.createElement('video');
-  vid.src = item.src;
+  var src = document.createElement('source');
+  src.src  = item.src;
+  src.type = 'video/webm; codecs=vp9';
+  vid.appendChild(src);
   vid.loop = true;
   vid.muted = true;
   vid.playsInline = true;
@@ -440,7 +443,11 @@ function sync() {
 sync();
 window.addEventListener('resize', function() { sync(); applyLandingSizes(); });
 if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', sync);
+  var vpTimer = null;
+  window.visualViewport.addEventListener('resize', function() {
+    clearTimeout(vpTimer);
+    vpTimer = setTimeout(sync, 200);
+  });
 }
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(sync);
