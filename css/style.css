@@ -660,7 +660,10 @@ a, button {
   :root {
     --m:  24px;
     --fs: 40px;
-    --contact-lift: 30px;   /* hérité par les paliers 480px et 390px */
+    /* 30px - 43.5px (une rangée de liste) : Contact redescend d'un cran pour
+       que la liste fermée tienne dans l'écran, au lieu d'un micro-scroll de
+       ~40px. Le scroll ne s'active alors qu'à l'ouverture d'une catégorie. */
+    --contact-lift: -13.5px;   /* hérité par les paliers 480px et 390px */
   }
 }
 

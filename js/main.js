@@ -412,6 +412,11 @@ function visibleItems() {
    MASK_SOLID doit correspondre au CSS des masques : le dégradé est
    100% opaque sur ses 88 premiers %, puis s'estompe sur les 12 derniers. */
 var MASK_SOLID = 0.88;
+var NUDGE_COMP = 0.02;  /* fraction de la hauteur d'écran : compense le
+                           nudge -2vh commun aux vidéos du carousel.
+                           C'est LA valeur à retoucher si les vidéos ne
+                           tombent pas pile sur l'axe des flèches.
+                           Augmenter = descendre / diminuer = remonter. */
 var EDGE_PAD   = 2;   /* px : la liste a totalement disparu ce nombre de
                          pixels avant d'atteindre la ligne.
                          AUGMENTER = disparaît plus tôt / cache plus grand.
@@ -430,10 +435,20 @@ function sync() {
 
   landingNameEl.style.top = Math.round(topLineY + 10) + 'px';
 
-  /* Flèches : centrées entre les deux lignes */
+  /* Flèches ET carousel : centrés sur le même axe, calculé depuis les lignes.
+     Le carousel avait gardé un calc(50% + 4vh) figé dans le CSS, sans rapport
+     avec la position réelle des lignes — d'où les vidéos légèrement trop
+     basses. Les 'nudge' par vidéo dans LANDING restent, eux, des réglages
+     individuels de cadrage. */
   var midY = Math.round((topLineY + botLineY) / 2);
   landingPrev.style.top = midY + 'px';
   landingNext.style.top = midY + 'px';
+
+  /* 4 vidéos sur 5 portent un nudge -2vh dans LANDING. Ce décalage commun
+     n'est pas un cadrage individuel, c'est un déplacement de tout le groupe :
+     on l'annule ici pour que les vidéos tombent pile sur l'axe des flèches.
+     Les nudge restent utiles pour les écarts d'une vidéo à l'autre. */
+  landingCarousel.style.top = Math.round(midY + NUDGE_COMP * vh) + 'px';
 
   if (list.style.display !== 'none') {
     list.style.paddingTop    = Math.ceil(topLineY) + 'px';
