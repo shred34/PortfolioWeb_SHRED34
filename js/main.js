@@ -39,7 +39,6 @@ var CATEGORIES = [
   }
 ];
 
-var uiTop       = document.getElementById('ui-top');
 var maskT       = document.getElementById('mask-top');
 var maskB       = document.getElementById('mask-bottom');
 var lineWork    = document.getElementById('line-work');
@@ -64,7 +63,6 @@ var landingCarousel = document.getElementById('landing-carousel');
 var landingPrev     = document.getElementById('landing-prev');
 var landingNext     = document.getElementById('landing-next');
 var landingNameEl   = document.getElementById('landing-name');
-var contactEl       = document.getElementById('contact');
 var landingCur      = 0;
 var landingSlides   = [];
 var landingVideos   = [];
@@ -217,14 +215,26 @@ if (!isTouchDevice) {
 }
 
 /* Swipe mobile */
-var swipeStartX = 0;
+var swipeStartX = 0, swipeStartY = 0, swipeTracking = false;
+
 landingCarousel.addEventListener('touchstart', function (e) {
-  swipeStartX = e.touches[0].clientX;
+  if (e.touches.length !== 1) { swipeTracking = false; return; }
+  swipeStartX   = e.touches[0].clientX;
+  swipeStartY   = e.touches[0].clientY;
+  swipeTracking = true;
 }, { passive: true });
+
 landingCarousel.addEventListener('touchend', function (e) {
+  if (!swipeTracking) return;
+  swipeTracking = false;
   var dx = e.changedTouches[0].clientX - swipeStartX;
-  if (Math.abs(dx) > 40) goLanding(dx < 0 ? landingCur + 1 : landingCur - 1);
-});
+  var dy = e.changedTouches[0].clientY - swipeStartY;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    goLanding(dx < 0 ? landingCur + 1 : landingCur - 1);
+  }
+}, { passive: true });
+
+landingCarousel.addEventListener('touchcancel', function () { swipeTracking = false; }, { passive: true });
 
 /* Visibilité globale (synchro ouverture/fermeture liste) */
 function setLandingVisible(visible, dur) {
@@ -392,28 +402,39 @@ function visibleItems() {
   return items;
 }
 
-/* ── Calcul masques + padding liste ── */
+/* ── Masques, flèches et padding liste ──────────────────────────────
+   Tout est déduit de la position RÉELLE des deux lignes, mesurée dans le
+   document. Les lignes elles-mêmes sont placées en CSS pur (elles sont
+   enfants de #ui-top et #contact-wrap). Il n'existe donc qu'une seule
+   source de vérité : impossible que les masques, les flèches et les
+   lignes se retrouvent désaccordés.
+
+   MASK_SOLID doit correspondre au CSS des masques : le dégradé est
+   100% opaque sur ses 88 premiers %, puis s'estompe sur les 12 derniers. */
+var MASK_SOLID = 0.88;
+var EDGE_PAD   = 6;   /* px : la liste a totalement disparu ce nombre de
+                         pixels avant d'atteindre la ligne */
+
 function sync() {
-  var topEdge     = uiTop.getBoundingClientRect().bottom;
-  var fs          = parseFloat(getComputedStyle(uiTop).fontSize);
-  var lh          = fs * 1.2;
-  var tH          = Math.ceil(topEdge + fs * 0.7);
-  var bH          = Math.ceil(window.innerHeight * 0.12 + lh * 1.2);
-  var contactRect = contactEl.getBoundingClientRect();
+  var vh       = window.innerHeight;
+  var topLineY = lineWork.getBoundingClientRect().bottom;   /* sous la ligne du haut */
+  var botLineY = lineContact.getBoundingClientRect().top;   /* sur la ligne du bas   */
 
-  /* Les deux lignes ne sont PAS positionnées ici : elles sont enfants de
-     #ui-top et #contact-wrap et suivent leurs parents en CSS pur. */
-  maskT.style.height    = tH + 'px';
-  maskB.style.height    = bH + 'px';
-  landingNameEl.style.top = (Math.round(topEdge) + 10) + 'px';
+  /* Hauteur telle que la zone 100% opaque s'arrête à EDGE_PAD px
+     à l'intérieur de chaque ligne. */
+  maskT.style.height = Math.ceil((topLineY + EDGE_PAD) / MASK_SOLID) + 'px';
+  maskB.style.height = Math.ceil((vh - botLineY + EDGE_PAD) / MASK_SOLID) + 'px';
 
-  var midY = Math.round((topEdge + contactRect.top) / 2);
+  landingNameEl.style.top = Math.round(topLineY + 10) + 'px';
+
+  /* Flèches : centrées entre les deux lignes */
+  var midY = Math.round((topLineY + botLineY) / 2);
   landingPrev.style.top = midY + 'px';
   landingNext.style.top = midY + 'px';
 
   if (list.style.display !== 'none') {
-    list.style.paddingTop    = Math.ceil(topEdge) + 'px';
-    list.style.paddingBottom = Math.ceil(bH * 0.875 - fs * 0.08 + 3) + 'px';
+    list.style.paddingTop    = Math.ceil(topLineY) + 'px';
+    list.style.paddingBottom = Math.ceil(vh - botLineY) + 'px';
   }
 }
 

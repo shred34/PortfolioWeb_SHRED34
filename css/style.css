@@ -132,6 +132,11 @@ a, button {
   z-index: 30;
   text-align: right;
   pointer-events: none;
+  /* IMPÉRATIF : mêmes métriques que #contact. Sans ça le conteneur hérite
+     --fs (64px sur desktop) et sa ligne de texte fait 76.8px au lieu de 38.4px,
+     ce qui repousse la ligne ~38px trop haut. */
+  font-size: 32px;
+  line-height: var(--lh);
 }
 
 #contact {

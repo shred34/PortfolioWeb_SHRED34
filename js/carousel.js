@@ -33,7 +33,7 @@ function initCarousel(el) {
     ctr.textContent = (cur + 1) + '/' + items.length;
     /* Lance la nouvelle vidéo */
     if (items[cur] && items[cur].tagName === 'VIDEO') {
-      items[cur].play();
+      items[cur].play().catch(function () {});
     }
   }
 
@@ -65,7 +65,7 @@ function initCarousel(el) {
     });
     ctr.textContent = '1/' + items.length;
     /* Lance la première vidéo si c'en est une */
-    if (items[0] && items[0].tagName === 'VIDEO') items[0].play();
+    if (items[0] && items[0].tagName === 'VIDEO') items[0].play().catch(function () {});
   }
 
   function loadSeq(i, max, acc, cb) {
@@ -100,15 +100,36 @@ function initCarousel(el) {
   prevBtn.addEventListener('click', function () { go(cur - 1); });
   nextBtn.addEventListener('click', function () { go(cur + 1); });
 
-  /* Swipe tactile */
-  var startX = 0;
-  track.addEventListener('touchstart', function (e) {
-    startX = e.touches[0].clientX;
+  /* ── Swipe tactile ────────────────────────────────────────────────
+     Les écouteurs sont sur .carousel-window et NON sur .carousel-track :
+     le track subit translateX(-100%, -200%…), donc dès la 2e slide sa boîte
+     est sortie de la zone visible. Comme les <img>/<video> sont en
+     pointer-events:none, le toucher ne rencontrait plus aucun élément à
+     l'écoute et le swipe cessait de fonctionner. La fenêtre, elle, ne
+     bouge jamais. */
+  var swipeSurface = el.querySelector('.carousel-window') || el;
+  var startX = 0, startY = 0, tracking = false;
+
+  swipeSurface.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    startX   = e.touches[0].clientX;
+    startY   = e.touches[0].clientY;
+    tracking = true;
   }, { passive: true });
-  track.addEventListener('touchend', function (e) {
+
+  swipeSurface.addEventListener('touchend', function (e) {
+    if (!tracking) return;
+    tracking = false;
     var dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 40) go(dx < 0 ? cur + 1 : cur - 1);
-  });
+    var dy = e.changedTouches[0].clientY - startY;
+    /* Geste horizontal uniquement : un scroll vertical ne doit pas
+       déclencher un changement de slide. */
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      go(dx < 0 ? cur + 1 : cur - 1);
+    }
+  }, { passive: true });
+
+  swipeSurface.addEventListener('touchcancel', function () { tracking = false; }, { passive: true });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
