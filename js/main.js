@@ -439,6 +439,9 @@ function sync() {
 
 sync();
 window.addEventListener('resize', function() { sync(); applyLandingSizes(); });
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', sync);
+}
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(sync);
 }
