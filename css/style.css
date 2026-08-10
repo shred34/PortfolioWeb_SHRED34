@@ -43,6 +43,11 @@
   --m:  24px;    /* marge latérale */
   --fs: 64px;    /* taille de base */
   --lh: 1.2;    /* interligne */
+  /* Remontée de Contact + sa ligne + son cache, pour que l'écart avec la
+     dernière ligne de la liste tombe sur le même rythme que les lignes.
+     Le cache et le padding de la liste suivent automatiquement (ils sont
+     déduits de la position réelle de la ligne). */
+  --contact-lift: 5px;
 }
 
 
@@ -126,7 +131,7 @@ a, button {
 
 #contact-wrap {
   position: fixed;
-  bottom: 11vh;
+  bottom: calc(11vh + var(--contact-lift));
   left: var(--m);
   right: var(--m);
   z-index: 30;
@@ -645,6 +650,7 @@ a, button {
   :root {
     --m:  24px;
     --fs: 40px;
+    --contact-lift: 10px;   /* hérité par les paliers 480px et 390px */
   }
 }
 

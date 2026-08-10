@@ -412,8 +412,11 @@ function visibleItems() {
    MASK_SOLID doit correspondre au CSS des masques : le dégradé est
    100% opaque sur ses 88 premiers %, puis s'estompe sur les 12 derniers. */
 var MASK_SOLID = 0.88;
-var EDGE_PAD   = 6;   /* px : la liste a totalement disparu ce nombre de
-                         pixels avant d'atteindre la ligne */
+var EDGE_PAD   = 2;   /* px : la liste a totalement disparu ce nombre de
+                         pixels avant d'atteindre la ligne.
+                         AUGMENTER = disparaît plus tôt / cache plus grand.
+                         DIMINUER  = disparaît plus près de la ligne.
+                         C'est LA valeur à retoucher pour ce réglage. */
 
 function sync() {
   var vh       = window.innerHeight;
@@ -438,8 +441,37 @@ function sync() {
   }
 }
 
+/* ── Déclenchement de sync() ────────────────────────────────────────
+   Problème corrigé ici : sur iOS, la barre de Safari qui apparaît ou
+   disparaît pendant le scroll émet un 'resize' PENDANT son animation.
+   sync() mesurait alors les lignes dans un état transitoire, calculait une
+   hauteur de cache fausse — et cette valeur restait figée jusqu'au resize
+   suivant. D'où les rares décalages cache/ligne en bout de scroll.
+
+   Parade : on mesure tout de suite (réactivité desktop) PUIS de nouveau une
+   fois que tout s'est stabilisé. Et on repasse un coup après chaque fin de
+   scroll, ce qui rattrape aussi le rebond élastique en bout de course.
+   Les caches sont blancs sur fond blanc : ces recalculs sont invisibles. */
+var settleTimer = null;
+function syncNowAndAfterSettle() {
+  sync();
+  clearTimeout(settleTimer);
+  settleTimer = setTimeout(sync, 250);
+}
+
 sync();
-window.addEventListener('resize', function() { sync(); applyLandingSizes(); });
+
+window.addEventListener('resize', function () {
+  syncNowAndAfterSettle();
+  applyLandingSizes();
+});
+
+var scrollTimer = null;
+window.addEventListener('scroll', function () {
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(sync, 150);   /* uniquement à l'arrêt du scroll */
+}, { passive: true });
+
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(sync);
 }
