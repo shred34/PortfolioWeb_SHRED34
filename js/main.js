@@ -6,9 +6,9 @@ var FEATURED = [
   { name: 'Camille',                label: 'Wellness Electronic Device', labelFr: 'Dispositif de bien-être' },
   { name: 'Shredsauce Exploration', label: 'Edition & Interface',        labelFr: 'Édition & Interface' },
   { name: 'Tristan-Linder.ch',      label: 'Web Design',                labelFr: 'Design Web' },
-  { name: 'Wild Destroyer',         label: 'Generative Interface',       labelFr: 'Interface Générative' },
-  { name: 'Idle Car',               label: 'Game',                       labelFr: 'Jeu' },
   { name: 'Pluck',                  label: 'Sound Toy',                  labelFr: 'Jouet Sonore' },
+  { name: 'Idle Car',               label: 'Game',                       labelFr: 'Jeu' },
+  { name: 'Wild Destroyer',         label: 'Generative Interface',       labelFr: 'Interface Générative' },
   { name: 'Greenlab',               label: '3D Poster',                  labelFr: 'Affiche 3D' },
   { name: 'Gallium Switch',         label: 'Installation',               labelFr: 'Installation' }
 ];
